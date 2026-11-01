@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Product Categories & Variations | Mehndi Studio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <style>
+    .admin-wrapper {
+      min-height: 100vh;
+      background: var(--cream);
+      padding-top: calc(var(--nav-h) + 1.5rem);
+      padding-bottom: 4rem;
+    }
+    .admin-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .admin-header-card {
+      background: linear-gradient(135deg, var(--maroon-dark), #3d1020);
+      color: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-deep);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .kpi-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--maroon-dark);
+      line-height: 1.1;
+    }
+    .kpi-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-top: 0.2rem;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .admin-tab-btn {
+      padding: 0.65rem 1.5rem;
+      border-radius: var(--radius-md);
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .admin-tab-btn.active {
+      background: var(--maroon);
+      color: var(--white);
+    }
+    .admin-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      box-shadow: var(--shadow-card);
+      border: 1.5px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .admin-table th {
+      background: var(--cream);
+      color: var(--maroon-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .admin-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .admin-table tr:hover td {
+      background: rgba(253,246,236,0.5);
+    }
+    .sku-badge {
+      font-family: monospace;
+      font-size: 0.78rem;
+      background: var(--cream-dark);
+      color: var(--text-dark);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .stock-select, .price-input, .stock-input {
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      font-size: 0.85rem;
+      outline: none;
+      background: var(--white);
+    }
+    .price-input {
+      width: 80px;
+      font-weight: 700;
+      color: var(--maroon-dark);
+    }
+    .stock-input {
+      width: 60px;
+    }
+    .save-row-btn {
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--emerald);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .save-row-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    @media (max-width: 1024px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .admin-table-wrap { overflow-x: auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ── NAVIGATION ──────────────────────────────── -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🌿</div>
+        <div class="nav-logo-text">
+          <div class="nav-logo-name">Mehndi Studio</div>
+          <div class="nav-logo-tagline">Admin Control Center</div>
+        </div>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="mehndiproduct.html" class="nav-link">Customer Shop</a></li>
+        <li><a href="admin.html" class="nav-link active">⚙️ Admin Panel</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="mehndiproduct.html" class="btn btn-outline btn-sm" style="font-size:0.8rem;">
+          🛍️ Open Storefront
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── ADMIN MAIN ──────────────────────────────── -->
+  <main class="admin-wrapper">
+    <div class="admin-container">
+      <!-- Admin Top Card -->
+      <div class="admin-header-card">
+        <div>
+          <div style="font-size:0.85rem;color:var(--gold-light);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:0.25rem;">
+            Database & Catalog Manager
+          </div>
+          <h1 style="font-family:var(--font-heading);margin:0;font-size:1.85rem;color:var(--white);">
+            Categories & Variations Dashboard
+          </h1>
+          <p style="font-size:0.88rem;color:rgba(253,246,236,0.8);margin-top:0.35rem;max-width:650px;">
+            Manage individual variation prices, stock counts, subcategories, and inspect customer orders with exact variation data. All edits sync in real-time.
+          </p>
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="saveAllChanges()">
+            💾 Save All Updates
+          </button>
+          <button class="btn btn-outline" style="color:var(--gold-light);border-color:var(--gold-light);" onclick="confirmResetDefaults()">
+            ↺ Reset Defaults
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(201,151,58,0.15);color:var(--gold-dark);">📦</div>
+          <div>
+            <div class="kpi-value" id="kpiTotalCategories">--</div>
+            <div class="kpi-label">Product Categories</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(74,15,26,0.1);color:var(--maroon);">🏷️</div>
+          <div class="kpi-value" id="kpiTotalVariations">80</div>
+          <div class="kpi-label">Sellable Products & Soaps</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(16,185,129,0.12);color:var(--emerald);">🛒</div>
+          <div>
+            <div class="kpi-value" id="kpiTotalOrders">0</div>
+            <div class="kpi-label">Customer Orders Placed</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(201,151,58,0.15);color:var(--gold);">💰</div>
+          <div>
+            <div class="kpi-value" id="kpiTotalRevenue">₹0</div>
+            <div class="kpi-label">Recorded Sales Volume</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" onclick="switchAdminTab('variations')" id="tabBtnVariations">
+          📦 Products, Variations & Soaps (<span id="tabVarsCount">80</span>)
+        </button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('orders')" id="tabBtnOrders">
+          📋 Customer Orders (<span id="ordersCountBadge">0</span>)
+        </button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('blogs')" id="tabBtnBlogs">
+          📝 Blog Posts Manager (<span id="tabBlogsCount">9</span>)
+        </button>
+      </div>
+
+      <!-- TAB 1: PRODUCT VARIATIONS MANAGER -->
+      <section id="panelVariations" class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <h3 style="font-family:var(--font-heading);color:var(--maroon-dark);margin:0;">
+              Variation Pricing & Stock Management
+            </h3>
+            <p style="font-size:0.82rem;color:var(--text-light);margin-top:0.25rem;">
+              Edit prices or availability below and click Save. Changes immediately reflect in the customer Mehndi Product menu.
+            </p>
+          </div>
+          <!-- Category Filter Dropdown -->
+          <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <label style="font-size:0.82rem;font-weight:600;color:var(--maroon-dark);">Filter Category:</label>
+            <select id="adminCatFilter" onchange="renderVariationsTable()" style="padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;background:var(--white);color:var(--maroon-dark);font-weight:600;outline:none;">
+              <option value="all">🌿 All Categories</option>
+            </select>
+            <input type="text" id="adminSearchInput" oninput="renderVariationsTable()" placeholder="Search SKU or name..." style="padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;outline:none;">
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Variation / Size</th>
+                <th>SKU</th>
+                <th>Selling Price (₹)</th>
+                <th>Original MRP (₹)</th>
+                <th>Stock Status</th>
+                <th>Qty</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="variationsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 2: ORDERS MANAGER -->
+      <section id="panelOrders" class="admin-card" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <h3 style="font-family:var(--font-heading);color:var(--maroon-dark);margin:0;">
+              Customer Orders & Variations Database
+            </h3>
+            <p style="font-size:0.82rem;color:var(--text-light);margin-top:0.25rem;">
+              Every order stores the exact selected variation (cone type, powder weight, oil size, etc.) without losing details.
+            </p>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="exportOrdersJSON()">
+            📥 Export Orders (JSON)
+          </button>
+        </div>
+
+        <div id="ordersContainer">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- TAB 3: BLOG POSTS MANAGER (3 SUBMENUS) -->
+      <section id="panelBlogs" class="admin-card" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <h3 style="font-family:var(--font-heading);color:var(--maroon-dark);margin:0;">
+              Blog Category & Content Management
+            </h3>
+            <p style="font-size:0.82rem;color:var(--text-light);margin-top:0.25rem;">
+              Manage and assign articles across the 3 main submenus (Bridal Tips, Product Use, After Care). Changes immediately reflect on the live blog pages.
+            </p>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <select id="adminBlogCatFilter" onchange="renderAdminBlogsTable()" style="padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;background:var(--white);color:var(--maroon-dark);font-weight:600;outline:none;">
+              <option value="all">📝 All Categories (3)</option>
+              <option value="bridal-tips">👰 Bridal Tips</option>
+              <option value="product-use">🌿 Product Use</option>
+              <option value="after-care">🌸 After Care</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="openBlogEditorModal()">
+              ➕ Add New Blog Post
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">Cover</th>
+                <th>Title & Excerpt</th>
+                <th>Category</th>
+                <th>Author</th>
+                <th>Read Time</th>
+                <th>Date</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminBlogsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/products-db.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/shop.js"></script>
+
+  <script>
+    let activeAdminTab = 'variations';
+
+    function switchAdminTab(tab) {
+      activeAdminTab = tab;
+      document.getElementById('tabBtnVariations').classList.toggle('active', tab === 'variations');
+      document.getElementById('tabBtnOrders').classList.toggle('active', tab === 'orders');
+      if (document.getElementById('tabBtnBlogs')) {
+        document.getElementById('tabBtnBlogs').classList.toggle('active', tab === 'blogs');
+      }
+      document.getElementById('panelVariations').style.display = tab === 'variations' ? 'block' : 'none';
+      document.getElementById('panelOrders').style.display = tab === 'orders' ? 'block' : 'none';
+      if (document.getElementById('panelBlogs')) {
+        document.getElementById('panelBlogs').style.display = tab === 'blogs' ? 'block' : 'none';
+      }
+      if (tab === 'orders') renderOrdersView();
+      if (tab === 'blogs') renderAdminBlogsTable();
+    }
+
+    function initAdmin() {
+      populateCategoryFilter();
+      updateKPICounters();
+      renderVariationsTable();
+      renderOrdersView();
+    }
+
+    function populateCategoryFilter() {
+      const select = document.getElementById('adminCatFilter');
+      if (!select || !window.MehndiDB) return;
+      const cats = window.MehndiDB.getCategories();
+      const soaps = window.MehndiDB.getSoaps ? window.MehndiDB.getSoaps() : [];
+      select.innerHTML = '<option value="all">🌿 All Categories & Products</option>' +
+        `<option value="soap">🧼 Natural Handmade Soaps (${soaps.length})</option>` +
+        cats.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
+    }
+
+    function updateKPICounters() {
+      if (!window.MehndiDB) return;
+      const kpiCats = document.getElementById('kpiTotalCategories');
+      if (kpiCats && window.MehndiDB.categories) kpiCats.textContent = window.MehndiDB.categories.length;
+      const allVars = window.MehndiDB.getAllVariations();
+      const soaps = window.MehndiDB.getSoaps ? window.MehndiDB.getSoaps() : [];
+      const totalCount = allVars.length + soaps.length;
+      const orders = window.MehndiDB.getOrders();
+
+      const kpiVars = document.getElementById('kpiTotalVariations');
+      if (kpiVars) kpiVars.textContent = totalCount;
+      const tabVars = document.getElementById('tabVarsCount');
+      if (tabVars) tabVars.textContent = totalCount;
+
+      const kpiOrders = document.getElementById('kpiTotalOrders');
+      if (kpiOrders) kpiOrders.textContent = orders.length;
+
+      const orderBadge = document.getElementById('ordersCountBadge');
+      if (orderBadge) orderBadge.textContent = orders.length;
+
+      const blogs = window.MehndiDB && window.MehndiDB.getBlogs ? window.MehndiDB.getBlogs() : [];
+      const tabBlogs = document.getElementById('tabBlogsCount');
+      if (tabBlogs) tabBlogs.textContent = blogs.length;
+
+      const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+      const kpiRev = document.getElementById('kpiTotalRevenue');
+      if (kpiRev) kpiRev.textContent = '₹' + totalRevenue.toLocaleString();
+    }
+
+    function renderVariationsTable() {
+      const tbody = document.getElementById('variationsTableBody');
+      if (!tbody || !window.MehndiDB) return;
+
+      const catFilter = document.getElementById('adminCatFilter')?.value || 'all';
+      const search = (document.getElementById('adminSearchInput')?.value || '').toLowerCase().trim();
+
+      const mehndiVars = window.MehndiDB.getAllVariations();
+      const soaps = window.MehndiDB.getSoaps ? window.MehndiDB.getSoaps() : [];
+      const soapVars = soaps.map(s => ({
+        sku: s.sku,
+        name: s.name,
+        categoryId: 'soap',
+        categoryName: 'Handmade Soap',
+        subCategory: s.badge || 'Natural',
+        variation: s.variants?.map(v => v.name).join(' • ') || '1 Bar',
+        price: s.price,
+        original: s.original,
+        stock: s.stock || 'in-stock',
+        stockCount: s.stockCount !== undefined ? s.stockCount : 50
+      }));
+
+      let vars = [];
+      if (catFilter === 'soap') {
+        vars = soapVars;
+      } else if (catFilter === 'all') {
+        vars = [...mehndiVars, ...soapVars];
+      } else {
+        vars = mehndiVars.filter(v => v.categoryId === catFilter);
+      }
+      if (search) {
+        vars = vars.filter(v =>
+          (v.name && v.name.toLowerCase().includes(search)) ||
+          (v.sku && v.sku.toLowerCase().includes(search)) ||
+          (v.categoryName && v.categoryName.toLowerCase().includes(search)) ||
+          (v.subCategory && v.subCategory.toLowerCase().includes(search)) ||
+          (v.variation && v.variation.toLowerCase().includes(search))
+        );
+      }
+
+      if (vars.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-light);">No variations found matching filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = vars.map(v => {
+        return `
+          <tr id="row-${v.sku}">
+            <td>
+              <div style="font-weight:600;color:var(--maroon-dark);">${v.categoryName || v.categoryId}</div>
+            </td>
+            <td>
+              ${v.subCategory ? `<span style="font-weight:600;color:var(--gold-dark);">${v.subCategory}</span>` : '<span style="color:var(--text-light)">—</span>'}
+            </td>
+            <td>
+              ${v.variation ? `<span style="background:var(--cream);border:1px solid var(--border);padding:0.15rem 0.5rem;border-radius:12px;font-size:0.75rem;font-weight:600;">${v.variation}</span>` : '<span style="color:var(--text-light)">—</span>'}
+            </td>
+            <td><span class="sku-badge">${v.sku}</span></td>
+            <td>
+              <input type="number" class="price-input" id="price-${v.sku}" value="${v.price}" min="1" step="1">
+            </td>
+            <td>
+              <input type="number" class="price-input" id="orig-${v.sku}" value="${v.original || ''}" placeholder="MRP" min="1" step="1">
+            </td>
+            <td>
+              <select class="stock-select" id="stock-${v.sku}">
+                <option value="in-stock" ${v.stock === 'in-stock' ? 'selected' : ''}>In Stock</option>
+                <option value="low-stock" ${v.stock === 'low-stock' ? 'selected' : ''}>Low Stock</option>
+                <option value="out-of-stock" ${v.stock === 'out-of-stock' ? 'selected' : ''}>Out of Stock</option>
+              </select>
+            </td>
+            <td>
+              <input type="number" class="stock-input" id="count-${v.sku}" value="${v.stockCount !== undefined ? v.stockCount : 50}" min="0">
+            </td>
+            <td>
+              <button class="save-row-btn" onclick="saveVariationRow('${v.sku}')">Save</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function saveVariationRow(sku) {
+      if (!window.MehndiDB) return;
+      const price = document.getElementById(`price-${sku}`)?.value;
+      const orig = document.getElementById(`orig-${sku}`)?.value;
+      const stock = document.getElementById(`stock-${sku}`)?.value;
+      const count = document.getElementById(`count-${sku}`)?.value;
+
+      if (sku.startsWith('soap-') || sku.startsWith('SOAP-')) {
+        window.MehndiDB.updateSoapPrice(sku, Number(price), orig ? Number(orig) : null);
+        window.MehndiDB.updateSoapStock(sku, stock, Number(count));
+        showToast(`✅ Updated Soap ${sku}: ₹${price} (${stock})`);
+      } else {
+        window.MehndiDB.updateVariationDetails(sku, {
+          price: Number(price),
+          original: orig ? Number(orig) : null,
+          stock: stock,
+          stockCount: Number(count)
+        });
+        showToast(`✅ Updated ${sku}: ₹${price} (${stock})`);
+      }
+      updateKPICounters();
+    }
+
+    function saveAllChanges() {
+      if (!window.MehndiDB) return;
+      const allVars = window.MehndiDB.getAllVariations();
+      const soaps = window.MehndiDB.getSoaps ? window.MehndiDB.getSoaps() : [];
+      let count = 0;
+
+      allVars.forEach(v => {
+        const pEl = document.getElementById(`price-${v.sku}`);
+        const oEl = document.getElementById(`orig-${v.sku}`);
+        const sEl = document.getElementById(`stock-${v.sku}`);
+        const cEl = document.getElementById(`count-${v.sku}`);
+        if (pEl) {
+          v.price = Number(pEl.value);
+          v.original = oEl && oEl.value ? Number(oEl.value) : null;
+          v.stock = sEl ? sEl.value : v.stock;
+          v.stockCount = cEl ? Number(cEl.value) : v.stockCount;
+          count++;
+        }
+      });
+      window.MehndiDB.persist();
+
+      soaps.forEach(s => {
+        const pEl = document.getElementById(`price-${s.sku}`);
+        const oEl = document.getElementById(`orig-${s.sku}`);
+        const sEl = document.getElementById(`stock-${s.sku}`);
+        const cEl = document.getElementById(`count-${s.sku}`);
+        if (pEl) {
+          window.MehndiDB.updateSoapPrice(s.sku, Number(pEl.value), oEl && oEl.value ? Number(oEl.value) : null);
+          window.MehndiDB.updateSoapStock(s.sku, sEl ? sEl.value : s.stock, cEl ? Number(cEl.value) : s.stockCount);
+          count++;
+        }
+      });
+
+      showToast(`🎉 Successfully saved all ${count} items to database!`);
+      updateKPICounters();
+    }
+
+    function confirmResetDefaults() {
+      if (confirm('Are you sure you want to reset all categories and prices back to factory defaults?')) {
+        window.MehndiDB.resetToDefaults();
+        renderVariationsTable();
+        updateKPICounters();
+        showToast('↺ Database restored to factory defaults.');
+      }
+    }
+
+    function renderOrdersView() {
+      const container = document.getElementById('ordersContainer');
+      if (!container || !window.MehndiDB) return;
+
+      const orders = window.MehndiDB.getOrders();
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:3rem;color:var(--text-light);">
+            <div style="font-size:3rem;margin-bottom:0.75rem">🛒</div>
+            <h4 style="color:var(--maroon-dark)">No Customer Orders Recorded Yet</h4>
+            <p style="font-size:0.85rem;margin-top:0.35rem">Place an order in the Customer Shop to see it appear here in real time with exact variation details!</p>
+            <a href="mehndiproduct.html" class="btn btn-primary btn-sm" style="margin-top:1rem">Go to Shop</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Recent';
+        return `
+          <div style="background:var(--cream);border-radius:var(--radius-md);border:1.5px solid var(--border);padding:1.5rem;margin-bottom:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:0.75rem;">
+              <div>
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                  <span style="font-size:1.15rem;font-weight:700;color:var(--maroon-dark);">#${order.id}</span>
+                  <span style="font-size:0.75rem;background:var(--gold);color:var(--white);padding:0.2rem 0.6rem;border-radius:12px;font-weight:600;">${order.status || 'Placed'}</span>
+                  <span style="font-size:0.8rem;color:var(--text-light);">${dateStr}</span>
+                </div>
+                <div style="font-size:0.85rem;color:var(--text-mid);margin-top:0.25rem;">
+                  Customer: <strong>${order.customer?.name || 'Guest'}</strong> (${order.customer?.phone || 'No phone'}) • ${order.customer?.email || ''}
+                </div>
+                <div style="font-size:0.8rem;color:var(--text-light);margin-top:0.15rem;">
+                  Address: ${order.customer?.address || 'N/A'} | Payment: <strong>${order.paymentMethod || 'COD'}</strong>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:1.35rem;font-weight:700;color:var(--maroon-dark);">₹${(order.total || 0).toLocaleString()}</div>
+                <div style="font-size:0.75rem;color:var(--text-light);">Subtotal: ₹${(order.subtotal || 0).toLocaleString()} + Shipping: ₹${order.shipping || 0}</div>
+                <div style="margin-top:0.5rem;">
+                  <select onchange="updateOrderStatus('${order.id}', this.value)" style="font-size:0.75rem;padding:0.25rem 0.5rem;border-radius:4px;border:1px solid var(--border);">
+                    <option value="Placed" ${order.status === 'Placed' ? 'selected' : ''}>Status: Placed</option>
+                    <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Status: Processing</option>
+                    <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Status: Shipped</option>
+                    <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Status: Delivered</option>
+                    <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Status: Cancelled</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Itemized Variations List -->
+            <div style="background:var(--white);border-radius:var(--radius-sm);padding:0.85rem 1.25rem;border:1px solid var(--border);">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--maroon-dark);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">
+                Ordered Product Variations (${order.items?.length || 0} items):
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.4rem;">
+                ${(order.items || []).map(it => {
+                  const varDetails = [it.subCategory, it.variation].filter(Boolean).join(' • ');
+                  return `
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;padding:0.25rem 0;border-bottom:1px dashed var(--border);">
+                      <div>
+                        <strong>${it.categoryName || it.name}</strong>
+                        ${varDetails ? `<span style="margin-left:0.5rem;font-size:0.75rem;background:rgba(201,151,58,0.15);color:var(--maroon-dark);padding:0.1rem 0.45rem;border-radius:10px;font-weight:600;">${varDetails}</span>` : ''}
+                        <span style="margin-left:0.5rem;font-family:monospace;font-size:0.75rem;color:var(--text-light);">${it.sku || ''}</span>
+                      </div>
+                      <div>
+                        ${it.qty} × ₹${(it.price || 0).toLocaleString()} = <strong>₹${((it.price || 0) * it.qty).toLocaleString()}</strong>
+                      </div>
+                    </div>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      if (window.MehndiDB) {
+        window.MehndiDB.updateOrderStatus(orderId, newStatus);
+        showToast(`Order #${orderId} marked as ${newStatus}`);
+      }
+    }
+
+    function exportOrdersJSON() {
+      if (!window.MehndiDB) return;
+      const orders = window.MehndiDB.getOrders();
+      const blob = new Blob([JSON.stringify(orders, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `mehndi_orders_${Date.now()}.json`;
+      a.click();
+    }
+
+    function renderAdminBlogsTable() {
+      const tbody = document.getElementById('adminBlogsTableBody');
+      if (!tbody || !window.MehndiDB) return;
+      const catFilter = document.getElementById('adminBlogCatFilter')?.value || 'all';
+      let blogs = window.MehndiDB.getBlogs ? window.MehndiDB.getBlogs() : [];
+      if (catFilter !== 'all') {
+        blogs = blogs.filter(b => b.category === catFilter);
+      }
+      if (blogs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-light);">No blog posts found in this category. Click "+ Add New Blog Post" above to create one.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = blogs.map(b => {
+        const catBadgeColor = b.category === 'bridal-tips' ? '#be185d' : (b.category === 'product-use' ? '#047857' : '#b45309');
+        const catBg = b.category === 'bridal-tips' ? '#fdf2f8' : (b.category === 'product-use' ? '#ecfdf5' : '#fffbeb');
+        return `
+          <tr>
+            <td>
+              <img src="${b.img}" style="width:50px;height:50px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);">
+            </td>
+            <td>
+              <strong style="color:var(--maroon-dark);font-size:0.9rem;">${b.title}</strong>
+              ${b.featured ? '<span style="margin-left:0.4rem;font-size:0.65rem;background:var(--gold);color:#fff;padding:0.15rem 0.4rem;border-radius:10px;font-weight:700;">Featured</span>' : ''}
+              <div style="font-size:0.75rem;color:var(--text-light);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:0.2rem;">${b.excerpt || ''}</div>
+            </td>
+            <td>
+              <span style="font-size:0.75rem;font-weight:700;color:${catBadgeColor};background:${catBg};padding:0.25rem 0.6rem;border-radius:12px;border:1px solid ${catBadgeColor}30;">
+                ${b.categoryName || b.category}
+              </span>
+            </td>
+            <td style="font-size:0.8rem;color:var(--text-mid);">${b.author || 'Author'}</td>
+            <td style="font-size:0.8rem;color:var(--text-light);">${b.readTime || '5 min'}</td>
+            <td style="font-size:0.8rem;color:var(--text-light);">${b.date || 'Recent'}</td>
+            <td style="text-align:right;white-space:nowrap;">
+              <a href="blog.html?cat=${b.category}" target="_blank" class="btn btn-outline btn-sm" style="font-size:0.75rem;padding:0.25rem 0.5rem;margin-right:0.3rem;" title="View on Blog">👁️ View</a>
+              <button onclick="openBlogEditorModal('${b.id}')" class="btn btn-outline btn-sm" style="font-size:0.75rem;padding:0.25rem 0.5rem;margin-right:0.3rem;" title="Edit Post">✏️ Edit</button>
+              <button onclick="deleteBlogPostFromAdmin('${b.id}')" class="btn btn-outline btn-sm" style="font-size:0.75rem;padding:0.25rem 0.5rem;color:#b91c1c;border-color:#fca5a5;" title="Delete Post">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openBlogEditorModal(blogId) {
+      const modal = document.getElementById('blogEditorModal');
+      if (!modal) return;
+      if (blogId && window.MehndiDB) {
+        const blog = window.MehndiDB.getBlog(blogId);
+        if (blog) {
+          document.getElementById('editBlogModalTitle').textContent = '✏️ Edit Blog Post';
+          document.getElementById('editBlogId').value = blog.id;
+          document.getElementById('editBlogTitle').value = blog.title || '';
+          document.getElementById('editBlogCategory').value = blog.category || 'bridal-tips';
+          document.getElementById('editBlogAuthor').value = blog.author || '';
+          document.getElementById('editBlogReadTime').value = blog.readTime || '6 min read';
+          document.getElementById('editBlogImg').value = blog.img || '';
+          document.getElementById('editBlogFeatured').checked = !!blog.featured;
+          document.getElementById('editBlogExcerpt').value = blog.excerpt || '';
+          document.getElementById('editBlogContent').value = blog.content || '';
+        }
+      } else {
+        document.getElementById('editBlogModalTitle').textContent = '➕ Add New Blog Post';
+        document.getElementById('editBlogId').value = '';
+        document.getElementById('editBlogTitle').value = '';
+        document.getElementById('editBlogCategory').value = 'bridal-tips';
+        document.getElementById('editBlogAuthor').value = 'Khushi Studio Master Artist';
+        document.getElementById('editBlogReadTime').value = '6 min read';
+        document.getElementById('editBlogImg').value = 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=700&h=450&fit=crop';
+        document.getElementById('editBlogFeatured').checked = false;
+        document.getElementById('editBlogExcerpt').value = '';
+        document.getElementById('editBlogContent').value = '';
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeBlogEditorModal() {
+      const modal = document.getElementById('blogEditorModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function saveBlogPostFromAdmin() {
+      if (!window.MehndiDB) return;
+      const title = document.getElementById('editBlogTitle').value.trim();
+      if (!title) {
+        alert('Please enter a blog post title');
+        return;
+      }
+      const category = document.getElementById('editBlogCategory').value;
+      const categoryNames = {
+        'bridal-tips': 'Bridal Tips',
+        'product-use': 'Product Use',
+        'after-care': 'After Care'
+      };
+      const blogData = {
+        id: document.getElementById('editBlogId').value || ('blog-' + Date.now().toString().slice(-6)),
+        title: title,
+        category: category,
+        categoryName: categoryNames[category] || 'Blog',
+        author: document.getElementById('editBlogAuthor').value.trim() || 'Mehndi Studio',
+        readTime: document.getElementById('editBlogReadTime').value.trim() || '5 min read',
+        date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        img: document.getElementById('editBlogImg').value.trim() || 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=700&h=450&fit=crop',
+        featured: document.getElementById('editBlogFeatured').checked,
+        excerpt: document.getElementById('editBlogExcerpt').value.trim(),
+        content: document.getElementById('editBlogContent').value.trim()
+      };
+      window.MehndiDB.saveBlog(blogData);
+      closeBlogEditorModal();
+      renderAdminBlogsTable();
+      updateKPICounters();
+      showToast('🎉 Blog post saved successfully and synced to customer blog!');
+    }
+
+    function deleteBlogPostFromAdmin(blogId) {
+      if (confirm('Are you sure you want to delete this blog post?')) {
+        window.MehndiDB.deleteBlog(blogId);
+        renderAdminBlogsTable();
+        updateKPICounters();
+        showToast('🗑️ Blog post removed successfully.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initAdmin();
+    });
+  </script>
+  <!-- Blog Editor Modal -->
+  <div id="blogEditorModal" style="display:none;position:fixed;inset:0;background:rgba(42,24,16,0.7);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;padding:1.5rem;">
+    <div style="background:var(--white);border-radius:var(--radius-lg);max-width:650px;width:100%;max-height:90vh;overflow-y:auto;padding:2rem;box-shadow:var(--shadow-deep);border:1.5px solid var(--border);position:relative;">
+      <button onclick="closeBlogEditorModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--text-light);">✕</button>
+      <h3 id="editBlogModalTitle" style="font-family:var(--font-heading);color:var(--maroon-dark);margin-top:0;margin-bottom:1.25rem;">➕ Add Blog Post</h3>
+      
+      <input type="hidden" id="editBlogId">
+      
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div>
+          <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Post Title *</label>
+          <input type="text" id="editBlogTitle" placeholder="e.g. 10 Things Every Bride Should Know" style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Category (Submenu) *</label>
+            <select id="editBlogCategory" style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;background:#fff;outline:none;">
+              <option value="bridal-tips">👰 Bridal Tips</option>
+              <option value="product-use">🌿 Product Use</option>
+              <option value="after-care">🌸 After Care</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Author Name</label>
+            <input type="text" id="editBlogAuthor" placeholder="e.g. Master Henna Artist" style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;outline:none;">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Read Time</label>
+            <input type="text" id="editBlogReadTime" placeholder="e.g. 6 min read" style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;outline:none;">
+          </div>
+          <div style="display:flex;align-items:center;padding-top:1.25rem;">
+            <label style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.85rem;font-weight:600;color:var(--maroon-dark);cursor:pointer;">
+              <input type="checkbox" id="editBlogFeatured" style="width:18px;height:18px;">
+              ⭐ Mark as Featured Article
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Cover Image URL</label>
+          <input type="text" id="editBlogImg" placeholder="https://..." style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;outline:none;">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Short Excerpt (Summary)</label>
+          <textarea id="editBlogExcerpt" rows="2" placeholder="Brief 1-2 sentence overview shown in blog cards..." style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;outline:none;font-family:sans-serif;"></textarea>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--maroon-dark);margin-bottom:0.35rem;">Full Article Content</label>
+          <textarea id="editBlogContent" rows="6" placeholder="Write full article paragraphs here..." style="width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.85rem;outline:none;font-family:sans-serif;"></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:0.5rem;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeBlogEditorModal()">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="saveBlogPostFromAdmin()">💾 Save Blog Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

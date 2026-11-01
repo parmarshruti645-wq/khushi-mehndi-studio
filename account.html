@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account & Orders | Mehndi Studio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+</head>
+
+<body>
+  <!-- ── NAVIGATION ──────────────────────────────── -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🌿</div>
+        <div class="nav-logo-text">
+          <div class="nav-logo-name">Mehndi Studio</div>
+          <div class="nav-logo-tagline">Premium Henna Art</div>
+        </div>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="mehndiproduct.html" class="nav-link">Mehndi Product</a></li>
+        <li><a href="soap.html" class="nav-link">Soap</a></li>
+        <li><a href="bridal.html" class="nav-link">Bridal</a></li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <!-- Blog Dropdown with Exactly 3 Submenus -->
+        <li class="nav-item-dropdown">
+          <a href="blog.html" class="nav-link nav-dropdown-toggle">
+            Blog <span class="chevron">&#9662;</span>
+          </a>
+          <div class="blog-dropdown-menu">
+            <a href="blog.html?cat=bridal-tips" class="blog-dropdown-link">
+              <div class="blog-drop-info">
+                <span class="blog-drop-title">Bridal Tips</span>
+                <span class="blog-drop-desc">Wedding Henna Prep & Design Guides</span>
+              </div>
+            </a>
+            <a href="blog.html?cat=product-use" class="blog-dropdown-link">
+              <div class="blog-drop-info">
+                <span class="blog-drop-title">Product Use</span>
+                <span class="blog-drop-desc">Cones, Powder, Oils & Tools Tutorials</span>
+              </div>
+            </a>
+            <a href="blog.html?cat=after-care" class="blog-dropdown-link">
+              <div class="blog-drop-info">
+                <span class="blog-drop-title">After Care</span>
+                <span class="blog-drop-desc">Balms, Oils & Stain Longevity Secrets</span>
+              </div>
+            </a>
+          </div>
+        </li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="nav-icon-btn" onclick="openSearch()" title="Search">🔍</button>
+        <a href="admin.html" class="nav-icon-btn" title="Admin Panel">⚙️</a>
+        <button class="nav-icon-btn" onclick="openCart()" style="position:relative">
+          🛒<span class="nav-badge cart-badge" style="display:none">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────── -->
+  <div class="page-hero" style="min-height:220px;">
+    <div class="page-hero-content">
+      <div class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span>My Account</div>
+      <h1>👤 My Account & Orders</h1>
+      <p>View your past order history, tracking status, and manage portal settings.</p>
+    </div>
+  </div>
+
+  <!-- ── CONTENT ─────────────────────────────────── -->
+  <section class="section" style="padding-top:3rem;">
+    <div class="container" style="max-width:960px;">
+      <!-- Quick Admin Banner -->
+      <div style="background:linear-gradient(135deg,var(--maroon-dark),#3d1020);border-radius:var(--radius-lg);padding:1.5rem 2rem;color:var(--white);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;box-shadow:var(--shadow-deep);">
+        <div>
+          <div style="font-size:0.8rem;color:var(--gold-light);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Store Administrator?</div>
+          <h3 style="font-family:var(--font-heading);margin:0.2rem 0;color:var(--white);">Access Admin Control Center</h3>
+          <p style="font-size:0.85rem;color:rgba(253,246,236,0.8);margin:0;">Manage product categories, subcategories, variations, live prices, and customer orders.</p>
+        </div>
+        <a href="admin.html" class="btn btn-primary" style="white-space:nowrap;">⚙️ Open Admin Panel →</a>
+      </div>
+
+      <!-- Recent Orders Section -->
+      <div style="background:var(--white);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow-card);border:1.5px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:1rem;">
+          <h3 style="font-family:var(--font-heading);color:var(--maroon-dark);margin:0;">📋 Your Order History</h3>
+          <a href="mehndiproduct.html" class="btn btn-outline btn-sm">🛍️ Continue Shopping</a>
+        </div>
+
+        <div id="customerOrdersList">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-bottom" style="padding:1.5rem 0;border-top:none;">
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;width:100%">
+        <a href="index.html" style="color:var(--gold-light);font-family:var(--font-heading);font-size:1.1rem;font-weight:700;">🌿 Mehndi Studio</a>
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+          <a href="index.html" class="footer-link">Home</a>
+          <a href="mehndiproduct.html" class="footer-link">Mehndi Product</a>
+          <a href="admin.html" class="footer-link" style="color:var(--gold);font-weight:600;">⚙️ Admin Panel</a>
+        </div>
+        <span>© 2026 Mehndi Studio 🇮🇳</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container"></div>
+
+  <script src="js/products-db.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/shop.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('customerOrdersList');
+      if (!container || !window.MehndiDB) return;
+
+      const orders = window.MehndiDB.getOrders();
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:3rem;color:var(--text-light);">
+            <div style="font-size:3rem;margin-bottom:0.75rem">🛍️</div>
+            <h4 style="color:var(--maroon-dark);margin-bottom:0.35rem;">No orders placed yet</h4>
+            <p style="font-size:0.85rem;">Discover our mehndi product categories and place your first order!</p>
+            <a href="mehndiproduct.html" class="btn btn-primary" style="margin-top:1.25rem;">Explore Categories</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(o => {
+        const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'Recent';
+        return `
+          <div style="background:var(--cream);border-radius:var(--radius-md);border:1px solid var(--border);padding:1.25rem;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;border-bottom:1px solid var(--border);padding-bottom:0.5rem;">
+              <div>
+                <strong style="color:var(--maroon-dark);font-size:1.05rem;">Order #${o.id}</strong>
+                <span style="font-size:0.75rem;color:var(--text-light);margin-left:0.5rem;">${dateStr}</span>
+              </div>
+              <div>
+                <span style="font-size:0.75rem;background:var(--gold);color:var(--white);padding:0.2rem 0.6rem;border-radius:12px;font-weight:600;">${o.status || 'Placed'}</span>
+                <strong style="margin-left:0.75rem;color:var(--maroon-dark);font-size:1.1rem;">₹${(o.total || 0).toLocaleString()}</strong>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:0.35rem;font-size:0.85rem;">
+              ${(o.items || []).map(it => {
+                const varText = [it.subCategory, it.variation].filter(Boolean).join(' • ');
+                return `
+                  <div style="display:flex;justify-content:space-between;color:var(--text-dark);">
+                    <span>${it.name || it.categoryName} ${varText ? `<span style="font-size:0.75rem;background:rgba(201,151,58,0.15);color:var(--maroon-dark);padding:0.1rem 0.45rem;border-radius:10px;font-weight:600;">${varText}</span>` : ''} × ${it.qty}</span>
+                    <span style="font-weight:600;">₹${((it.price || 0) * it.qty).toLocaleString()}</span>
+                  </div>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  </script>
+</body>
+
+</html>
+
